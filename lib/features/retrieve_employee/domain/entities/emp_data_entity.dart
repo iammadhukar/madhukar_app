@@ -4,8 +4,8 @@ class EmpDataEntity extends Equatable {
   final String id;
   final String name;
   final String role;
-  final DateTime startDate;
-  final DateTime endDate;
+  final int startDate;
+  final int endDate;
 
   EmpDataEntity({
     required this.id,

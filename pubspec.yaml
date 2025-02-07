@@ -45,6 +45,10 @@ dependencies:
   # dependency injection package
   get_it: ^8.0.3
 
+  #local database
+  floor: ^1.4.2
+  sqflite: ^2.3.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -56,6 +60,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
   build_runner: ^2.4.9
+  floor_generator: ^1.4.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
