@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:madhukar_app/features/retrieve_employee/presentation/bloc/get_data_event.dart';
 import 'package:madhukar_app/features/retrieve_employee/presentation/bloc/get_data_state.dart';
 
 import '../bloc/get_data_bloc.dart';
+import '../widgets/emp_list_tile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,12 +13,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +37,9 @@ class _HomePageState extends State<HomePage> {
                     itemCount: state.data!.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      return Container();
+                      return EmpListTile(
+                        employee: state.data![index],
+                      );
                     },
                     separatorBuilder: (context, index) {
                       return const Divider(
