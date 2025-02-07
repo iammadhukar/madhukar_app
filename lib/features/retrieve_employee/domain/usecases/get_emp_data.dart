@@ -8,7 +8,7 @@ class GetEmpDataUseCase extends UseCase<DataState<List<EmpDataEntity>>, void> {
 
   GetEmpDataUseCase(this._repository);
   @override
-  Future<DataState<List<EmpDataEntity>>> call(param) {
+  Future<DataState<List<EmpDataEntity>>> call({void param}) {
     return _repository.getEmployees();
   }
 }
