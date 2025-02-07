@@ -8,6 +8,7 @@ import 'features/retrieve_employee/presentation/pages/home_page.dart';
 import 'injection_container.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await initializeDependencies();
   runApp(const MyApp());
 }
