@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:madhukar_app/features/retrieve_employee/presentation/bloc/get_data_bloc.dart';
 
+import 'config/util/theme_data.dart';
+import 'features/retrieve_employee/presentation/bloc/get_data_event.dart';
+import 'features/retrieve_employee/presentation/pages/home_page.dart';
 import 'injection_container.dart';
 
 void main() async {
@@ -12,13 +17,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      // home: const MyHomePage(),
-    );
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider<GetEmpDataBloc>(
+              create: (context) => sl()..add(const GetEmpDataEvent()))
+        ],
+        child: MaterialApp(
+          title: 'Flutter Demo',
+          theme: theme(),
+          home: const HomePage(),
+        ));
   }
 }
