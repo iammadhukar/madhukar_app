@@ -20,7 +20,7 @@ Future<void> initializeDependencies() async {
 
   //repository
   sl.registerLazySingleton<EmpDataRepository>(
-      () => EmpDataRepositoryImpl(sl()));
+      () => EmpDataRepositoryImpl(sl(), sl()));
   //usecases
   sl.registerLazySingleton<GetEmpDataUseCase>(() => GetEmpDataUseCase(sl()));
 
