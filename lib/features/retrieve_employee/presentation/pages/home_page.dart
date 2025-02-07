@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xffF2F2F2),
       appBar: AppBar(
         title: const Text("Employee List"),
         backgroundColor: const Color(0xff1DA1F2),
@@ -61,8 +62,7 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-      ),
+          onPressed: () {}, child: Image.asset("assets/images/fab_icon.png")),
     );
   }
 }
