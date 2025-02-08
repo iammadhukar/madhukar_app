@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:madhukar_app/features/retrieve_employee/presentation/bloc/get_data_state.dart';
 import 'package:madhukar_app/features/retrieve_employee/presentation/pages/add_emp_detail_page.dart';
 
-import '../bloc/get_data_bloc.dart';
+import '../bloc/employee_data_bloc.dart';
+import '../bloc/employee_data_state.dart';
 import '../widgets/emp_list_tile.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,17 +22,22 @@ class _HomePageState extends State<HomePage> {
         title: const Text("Employee List"),
         backgroundColor: const Color(0xff1DA1F2),
       ),
-      body: BlocBuilder<GetEmpDataBloc, GetDataState>(
+      body: BlocBuilder<EmployeeDatabloc, EmployeeDataState>(
         builder: (context, state) {
-          if (state is DataLoadingState) {
+          print("hahahaha $state");
+          if (state is InitialState) {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (state is DataFailedState) {
-            return Center(
-              child: Text(state.error!),
+          } else if (state is EmployeeDataFetchingState) {
+            return const Center(
+              child: CircularProgressIndicator(),
             );
-          } else {
+          } else if (state is EmployeeDataFetchingError) {
+            return Center(
+              child: Text(state.error),
+            );
+          } else if (state is EmployeeDataFetchedState) {
             return state.data!.isNotEmpty
                 ? ListView.separated(
                     itemCount: state.data!.length,
@@ -55,13 +60,17 @@ class _HomePageState extends State<HomePage> {
                       width: 261.79,
                     ),
                   );
+          } else {
+            return const Center(
+              child: Text("Something went wrong"),
+            );
           }
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => AddEmployeeDetailPage()));
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const AddEmployeeDetailPage()));
         },
         child: Image.asset("assets/images/fab_icon.png"),
       ),

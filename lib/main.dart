@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:madhukar_app/features/retrieve_employee/presentation/bloc/get_data_bloc.dart';
 
 import 'config/util/theme_data.dart';
+import 'features/retrieve_employee/presentation/bloc/employee_data_bloc.dart';
+import 'features/retrieve_employee/presentation/bloc/employee_data_event.dart';
 import 'features/retrieve_employee/presentation/bloc/get_data_event.dart';
 import 'features/retrieve_employee/presentation/pages/home_page.dart';
 import 'injection_container.dart';
@@ -20,8 +22,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-          BlocProvider<GetEmpDataBloc>(
-              create: (context) => sl()..add(const GetEmpDataEvent()))
+          BlocProvider<EmployeeDatabloc>(
+              create: (context) =>
+                  sl<EmployeeDatabloc>()..add(const GetEmployeeDataEvent())),
         ],
         child: MaterialApp(
           title: 'Flutter Demo',
