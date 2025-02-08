@@ -24,7 +24,6 @@ class _HomePageState extends State<HomePage> {
       ),
       body: BlocBuilder<EmployeeDatabloc, EmployeeDataState>(
         builder: (context, state) {
-          print("hahahaha $state");
           if (state is InitialState) {
             return const Center(
               child: CircularProgressIndicator(),
