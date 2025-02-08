@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:madhukar_app/features/retrieve_employee/presentation/bloc/get_data_state.dart';
+import 'package:madhukar_app/features/retrieve_employee/presentation/pages/add_emp_detail_page.dart';
 
 import '../bloc/get_data_bloc.dart';
 import '../widgets/emp_list_tile.dart';
@@ -58,7 +59,12 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {}, child: Image.asset("assets/images/fab_icon.png")),
+        onPressed: () {
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => AddEmployeeDetailPage()));
+        },
+        child: Image.asset("assets/images/fab_icon.png"),
+      ),
     );
   }
 }
