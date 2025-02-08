@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:madhukar_app/config/util/emp_role.dart';
 import 'package:intl/intl.dart';
+import 'package:madhukar_app/features/retrieve_employee/presentation/bloc/employee_data_event.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../bloc/employee_data_bloc.dart';
 import '../widgets/app_button.dart';
 
 class AddEmployeeDetailPage extends StatefulWidget {
@@ -16,7 +19,8 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
   final TextEditingController _nameController = TextEditingController();
 
   final CalendarFormat _calendarFormat = CalendarFormat.month;
-  DateTime _selectedDate = DateTime.now();
+  DateTime? _startDate;
+  DateTime? _endDate;
   final DateFormat formatter = DateFormat('d MMM yyyy');
 
   // void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
@@ -118,7 +122,13 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        selectDate();
+                        selectDate().then((value) {
+                          if (value != null) {
+                            context.read<EmployeeDatabloc>().add(
+                                EmployeeStartDateSelectionEvent(
+                                    startDate: value));
+                          }
+                        });
                       },
                       child: Container(
                         height: 40,
@@ -149,23 +159,33 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
                     ),
                   ),
                   Expanded(
-                    child: Container(
-                      height: 40,
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xffE5E5E5)),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(2)),
-                      ),
-                      child: Row(children: [
-                        Image.asset(
-                          'assets/images/calendar.png',
-                          height: 24,
-                          width: 24,
+                    child: GestureDetector(
+                      onTap: () {
+                        selectDate().then((value) {
+                          if (value != null) {
+                            context.read<EmployeeDatabloc>().add(
+                                EmployeeEndDateSelectionEvent(endDate: value));
+                          }
+                        });
+                      },
+                      child: Container(
+                        height: 40,
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: const Color(0xffE5E5E5)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(2)),
                         ),
-                        const SizedBox(width: 13.8),
-                        const Text('No date'),
-                      ]),
+                        child: Row(children: [
+                          Image.asset(
+                            'assets/images/calendar.png',
+                            height: 24,
+                            width: 24,
+                          ),
+                          const SizedBox(width: 13.8),
+                          const Text('No date'),
+                        ]),
+                      ),
                     ),
                   ),
                 ],
@@ -201,11 +221,18 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
           shrinkWrap: true,
           itemCount: empRoles.length,
           itemBuilder: (context, index) {
-            return Center(
-              child: Text(
-                empRoles[index],
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+            return GestureDetector(
+              onTap: () {
+                context
+                    .read<EmployeeDatabloc>()
+                    .add(UpdateEmployeeRoleEvent(role: empRoles[index]));
+              },
+              child: Center(
+                child: Text(
+                  empRoles[index],
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w400),
+                ),
               ),
             );
           },
@@ -221,8 +248,9 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
     );
   }
 
-  selectDate() {
-    showDialog(
+  Future<DateTime?> selectDate() {
+    DateTime? selectedDate;
+    return showDialog<DateTime?>(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
@@ -239,10 +267,12 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                      child: _presetButton("Today", DateTime.now(), false)),
+                      child: _presetButton("Today", DateTime.now(), false,
+                          (date) => selectedDate = date)),
                   const SizedBox(width: 16),
                   Expanded(
-                      child: _presetButton("Next Monday", _nextMonday(), true)),
+                      child: _presetButton("Next Monday", _nextMonday(), true,
+                          (date) => selectedDate = _nextMonday())),
                 ],
               ),
             ),
@@ -253,12 +283,16 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                      child:
-                          _presetButton("Next Tuesday", _nextTuesday(), false)),
+                      child: _presetButton("Next Tuesday", _nextTuesday(),
+                          false, (date) => selectedDate = _nextTuesday())),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: _presetButton("After 1 week",
-                        DateTime.now().add(const Duration(days: 7)), false),
+                    child: _presetButton(
+                        "After 1 week",
+                        DateTime.now().add(const Duration(days: 7)),
+                        false,
+                        (date) => selectedDate =
+                            DateTime.now().add(const Duration(days: 7))),
                   ),
                 ],
               ),
@@ -268,15 +302,13 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TableCalendar(
-                  focusedDay: _selectedDate,
+                  focusedDay: selectedDate ?? DateTime.now(),
                   firstDay: DateTime(2000),
                   lastDay: DateTime(2100),
                   calendarFormat: _calendarFormat,
-                  selectedDayPredicate: (day) => isSameDay(day, _selectedDate),
+                  selectedDayPredicate: (day) => isSameDay(day, selectedDate),
                   onDaySelected: (selectedDay, focusedDay) {
-                    setState(() {
-                      _selectedDate = selectedDay;
-                    });
+                    selectedDate = selectedDay;
                   },
                   headerStyle: const HeaderStyle(
                     formatButtonVisible: false,
@@ -299,7 +331,7 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    formatter.format(_selectedDate),
+                    formatter.format(selectedDate ?? DateTime.now()),
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.w400),
                   ),
@@ -318,12 +350,7 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
                   const SizedBox(width: 16),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text(
-                                "Selected Date: ${formatter.format(_selectedDate)}")),
-                      );
+                      Navigator.pop(context, selectedDate);
                     },
                     child: Container(
                       height: 40,
@@ -334,17 +361,6 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
                       child: const Center(child: Text("Save")),
                     ),
                   ),
-                  // ElevatedButton(
-                  //   child: const Text("Save"),
-                  //   onPressed: () {
-                  //     Navigator.pop(context);
-                  //     ScaffoldMessenger.of(context).showSnackBar(
-                  //       SnackBar(
-                  //           content: Text(
-                  //               "Selected Date: ${formatter.format(_selectedDate)}")),
-                  //     );
-                  //   },
-                  // ),
                 ],
               ),
             ),
@@ -355,14 +371,13 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
   }
 
   /// Button for selecting preset dates
-  Widget _presetButton(String text, DateTime date, bool isSelected) {
+  Widget _presetButton(String text, DateTime date, bool isSelected,
+      Function(DateTime) onDateSelection) {
     return GestureDetector(
-      onTap: () => setState(() {
-        _selectedDate = date;
-      }),
+      onTap: () => onDateSelection(date),
       child: Container(
         height: 36,
-        padding: EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
           color: isSelected ? const Color(0xff1DA1F2) : const Color(0xffEDF8FF),
           borderRadius: const BorderRadius.all(Radius.circular(4)),
