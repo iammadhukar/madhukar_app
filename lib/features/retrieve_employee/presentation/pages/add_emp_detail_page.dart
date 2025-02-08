@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:madhukar_app/config/util/emp_role.dart';
 
 import '../widgets/app_button.dart';
 
@@ -56,36 +57,41 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
                   ),
                 ),
               ),
-              Container(
-                height: 40,
-                margin: const EdgeInsets.only(top: 23),
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xffE5E5E5)),
-                  borderRadius: const BorderRadius.all(Radius.circular(2)),
-                ),
-                child: const Row(
-                  children: [
-                    Icon(
-                      Icons.work_outline,
-                      color: Color(0xff1DA1F2),
-                    ),
-                    SizedBox(width: 12.0),
-                    Text(
-                      'Select role',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xff949C9E),
+              GestureDetector(
+                onTap: () {
+                  showRoleBottomSheet();
+                },
+                child: Container(
+                  height: 40,
+                  margin: const EdgeInsets.only(top: 23),
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: const Color(0xffE5E5E5)),
+                    borderRadius: const BorderRadius.all(Radius.circular(2)),
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.work_outline,
+                        color: Color(0xff1DA1F2),
                       ),
-                    ),
-                    Spacer(),
-                    Icon(
-                      Icons.arrow_drop_down,
-                      size: 22,
-                      color: Color(0xff1DA1F2),
-                    )
-                  ],
+                      SizedBox(width: 12.0),
+                      Text(
+                        'Select role',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff949C9E),
+                        ),
+                      ),
+                      Spacer(),
+                      Icon(
+                        Icons.arrow_drop_down,
+                        size: 22,
+                        color: Color(0xff1DA1F2),
+                      )
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 23),
@@ -159,6 +165,36 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
           title: 'Save',
         ),
       ],
+    );
+  }
+
+  showRoleBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      builder: (context) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        child: ListView.separated(
+          shrinkWrap: true,
+          itemCount: empRoles.length,
+          itemBuilder: (context, index) {
+            return Center(
+              child: Text(
+                empRoles[index],
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+              ),
+            );
+          },
+          separatorBuilder: (context, index) {
+            return const Divider(
+              // height: 1,
+              thickness: 0.5,
+              color: Colors.grey,
+            );
+          },
+        ),
+      ),
     );
   }
 }
