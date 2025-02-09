@@ -41,14 +41,14 @@ class RoleWidget extends StatelessWidget {
                 String role = "";
 
                 if (state is EmployeeDataUpdatedState) {
-                  role = state.role!;
+                  role = state.role ?? "";
                 }
                 return Text(
                   role.isEmpty ? 'Select role' : role,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
-                    color: Color(0xff949C9E),
+                    color: role.isEmpty ? Color(0xff949C9E) : Color(0xff323238),
                   ),
                 );
               },

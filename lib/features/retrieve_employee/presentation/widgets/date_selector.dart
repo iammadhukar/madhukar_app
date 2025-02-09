@@ -37,11 +37,21 @@ class DateSelector extends StatelessWidget {
           date == null
               ? const Text(
                   "No date",
+                  style: TextStyle(
+                    color: Color(0xff949C9E),
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                  ),
                 )
               : Text(
                   DateUtils.isSameDay(DateTime.now(), date)
                       ? "Today"
                       : formatter.format(date!),
+                  style: const TextStyle(
+                    color: Color(0xff323238),
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                  ),
                 ),
         ]),
       ),
@@ -49,125 +59,167 @@ class DateSelector extends StatelessWidget {
   }
 
   Future<DateTime?> selectDate(BuildContext context) {
-    DateTime? selectedDate;
+    DateTime? selectedDate = date;
+    int selectedButton = date != null ? checkSelectedButton(date!) : 1;
     return showDialog<DateTime?>(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 0, vertical: 20.0),
-        content: SizedBox(
-          height: 544,
-          width: 396,
-          child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                      child: _presetButton("Today", DateTime.now(), false,
-                          (date) => selectedDate = date)),
-                  const SizedBox(width: 16),
-                  Expanded(
-                      child: _presetButton("Next Monday", _nextMonday(), true,
-                          (date) => selectedDate = _nextMonday())),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                      child: _presetButton("Next Tuesday", _nextTuesday(),
-                          false, (date) => selectedDate = _nextTuesday())),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _presetButton(
-                        "After 1 week",
-                        DateTime.now().add(const Duration(days: 7)),
-                        false,
-                        (date) => selectedDate =
-                            DateTime.now().add(const Duration(days: 7))),
-                  ),
-                ],
-              ),
-            ),
-            // Table Calendar
-            Expanded(
-              child: Padding(
+      builder: (context) => StatefulBuilder(builder: (context, setState) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 0, vertical: 20.0),
+          content: SizedBox(
+            height: 544,
+            width: 396,
+            child: Column(children: [
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: TableCalendar(
-                  focusedDay: selectedDate ?? DateTime.now(),
-                  firstDay: DateTime(2000),
-                  lastDay: DateTime(2100),
-                  calendarFormat: _calendarFormat,
-                  selectedDayPredicate: (day) => isSameDay(day, selectedDate),
-                  onDaySelected: (selectedDay, focusedDay) {
-                    selectedDate = selectedDay;
-                  },
-                  headerStyle: const HeaderStyle(
-                    formatButtonVisible: false,
-                    titleCentered: true,
-                  ),
-                  availableGestures: AvailableGestures.all,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                        child: _presetButton(
+                            "Today",
+                            DateTime.now(),
+                            selectedButton == 1,
+                            (date) => setState(() {
+                                  selectedButton = 1;
+                                  selectedDate = date;
+                                }))),
+                    const SizedBox(width: 16),
+                    Expanded(
+                        child: _presetButton(
+                            "Next Monday",
+                            _nextMonday(),
+                            selectedButton == 2,
+                            (date) => setState(() {
+                                  selectedButton = 2;
+                                  selectedDate = _nextMonday();
+                                }))),
+                  ],
                 ),
               ),
-            ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Image.asset(
-                    'assets/images/calendar.png',
-                    height: 20,
-                    width: 23,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    formatter.format(selectedDate ?? DateTime.now()),
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      height: 40,
-                      width: 73,
-                      decoration: const BoxDecoration(
-                          color: Color(0xffEDF8FF),
-                          borderRadius: BorderRadius.all(Radius.circular(4))),
-                      child: const Center(child: Text("Cancel")),
+              const SizedBox(height: 16.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                        child: _presetButton(
+                            "Next Tuesday",
+                            _nextTuesday(),
+                            selectedButton == 3,
+                            (date) => setState(() {
+                                  selectedButton = 3;
+                                  selectedDate = _nextTuesday();
+                                }))),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _presetButton(
+                          "After 1 week",
+                          DateTime.now().add(const Duration(days: 7)),
+                          selectedButton == 4,
+                          (date) => setState(() {
+                                selectedButton = 4;
+                                selectedDate =
+                                    DateTime.now().add(const Duration(days: 7));
+                              })),
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context, selectedDate);
-                    },
-                    child: Container(
-                      height: 40,
-                      width: 73,
-                      decoration: const BoxDecoration(
-                          color: Color(0xff1DA1F2),
-                          borderRadius: BorderRadius.all(Radius.circular(4))),
-                      child: const Center(child: Text("Save")),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ]),
-        ),
-      ),
+              // Table Calendar
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: TableCalendar(
+                    focusedDay: selectedDate ?? DateTime.now(),
+                    firstDay: DateTime(2000),
+                    lastDay: DateTime(2100),
+                    calendarFormat: _calendarFormat,
+                    selectedDayPredicate: (day) => isSameDay(day, selectedDate),
+                    onDaySelected: (sDay, focusedDay) {
+                      setState(() {
+                        selectedDate = sDay;
+                        selectedButton = checkSelectedButton(sDay);
+                      });
+                    },
+                    headerStyle: const HeaderStyle(
+                      formatButtonVisible: false,
+                      titleCentered: true,
+                    ),
+                    availableGestures: AvailableGestures.all,
+                  ),
+                ),
+              ),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Image.asset(
+                      'assets/images/calendar.png',
+                      height: 20,
+                      width: 23,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      formatter.format(selectedDate ?? DateTime.now()),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w400),
+                    ),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        height: 40,
+                        width: 73,
+                        decoration: const BoxDecoration(
+                            color: Color(0xffEDF8FF),
+                            borderRadius: BorderRadius.all(Radius.circular(4))),
+                        child: const Center(child: Text("Cancel")),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context, selectedDate);
+                      },
+                      child: Container(
+                        height: 40,
+                        width: 73,
+                        decoration: const BoxDecoration(
+                            color: Color(0xff1DA1F2),
+                            borderRadius: BorderRadius.all(Radius.circular(4))),
+                        child: const Center(child: Text("Save")),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ]),
+          ),
+        );
+      }),
     );
+  }
+
+  int checkSelectedButton(DateTime selectedDate) {
+    if (DateUtils.isSameDay(DateTime.now(), selectedDate)) {
+      return 1;
+    } else if (DateUtils.isSameDay(_nextMonday(), selectedDate)) {
+      return 2;
+    } else if (DateUtils.isSameDay(_nextTuesday(), selectedDate)) {
+      return 3;
+    } else if (DateUtils.isSameDay(
+        DateTime.now().add(const Duration(days: 7)), selectedDate)) {
+      return 4;
+    } else {
+      return 5;
+    }
   }
 
   /// Button for selecting preset dates

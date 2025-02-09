@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:madhukar_app/features/retrieve_employee/presentation/bloc/employee_data_event.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 import '../bloc/employee_data_bloc.dart';
 import '../bloc/employee_data_state.dart';
@@ -75,6 +73,7 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
                       if (state is EmployeeDataUpdatedState) {
                         sDate = state.startDate;
                       }
+
                       return DateSelector(
                         date: sDate ?? DateTime.now(),
                         onDateSelection: (date) {
