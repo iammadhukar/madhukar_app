@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:madhukar_app/config/util/emp_role.dart';
 import 'package:intl/intl.dart';
 import 'package:madhukar_app/features/retrieve_employee/presentation/bloc/employee_data_event.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../bloc/employee_data_bloc.dart';
+import '../bloc/employee_data_state.dart';
 import '../widgets/app_button.dart';
+import '../widgets/date_selector.dart';
+import '../widgets/role_widget.dart';
 
 class AddEmployeeDetailPage extends StatefulWidget {
   const AddEmployeeDetailPage({super.key});
@@ -17,23 +19,6 @@ class AddEmployeeDetailPage extends StatefulWidget {
 
 class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
   final TextEditingController _nameController = TextEditingController();
-
-  final CalendarFormat _calendarFormat = CalendarFormat.month;
-  DateTime? _startDate;
-  DateTime? _endDate;
-  final DateFormat formatter = DateFormat('d MMM yyyy');
-
-  // void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
-  //   setState(() {
-  //     _selectedDate = args.value;
-  //   });
-  // }
-
-  // void _selectPresetDate(DateTime date) {
-  //   setState(() {
-  //     _selectedDate = date;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -79,76 +64,25 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  showRoleBottomSheet();
-                },
-                child: Container(
-                  height: 40,
-                  margin: const EdgeInsets.only(top: 23),
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0xffE5E5E5)),
-                    borderRadius: const BorderRadius.all(Radius.circular(2)),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(
-                        Icons.work_outline,
-                        color: Color(0xff1DA1F2),
-                      ),
-                      SizedBox(width: 12.0),
-                      Text(
-                        'Select role',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: Color(0xff949C9E),
-                        ),
-                      ),
-                      Spacer(),
-                      Icon(
-                        Icons.arrow_drop_down,
-                        size: 22,
-                        color: Color(0xff1DA1F2),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+              RoleWidget(),
               const SizedBox(height: 23),
               Row(
                 children: [
                   Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        selectDate().then((value) {
-                          if (value != null) {
-                            context.read<EmployeeDatabloc>().add(
-                                EmployeeStartDateSelectionEvent(
-                                    startDate: value));
-                          }
-                        });
-                      },
-                      child: Container(
-                        height: 40,
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: const Color(0xffE5E5E5)),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(2)),
-                        ),
-                        child: Row(children: [
-                          Image.asset(
-                            'assets/images/calendar.png',
-                            height: 24,
-                            width: 24,
-                          ),
-                          const SizedBox(width: 13.8),
-                          const Text('Today'),
-                        ]),
-                      ),
-                    ),
+                    child: BlocBuilder<EmployeeDatabloc, EmployeeDataState>(
+                        builder: (context, state) {
+                      DateTime? sDate;
+                      if (state is EmployeeDataUpdatedState) {
+                        sDate = state.startDate;
+                      }
+                      return DateSelector(
+                        date: sDate ?? DateTime.now(),
+                        onDateSelection: (date) {
+                          context.read<EmployeeDatabloc>().add(
+                              EmployeeStartDateSelectionEvent(startDate: date));
+                        },
+                      );
+                    }),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -158,36 +92,22 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
                       height: 20,
                     ),
                   ),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        selectDate().then((value) {
-                          if (value != null) {
-                            context.read<EmployeeDatabloc>().add(
-                                EmployeeEndDateSelectionEvent(endDate: value));
-                          }
-                        });
+                  Expanded(child:
+                      BlocBuilder<EmployeeDatabloc, EmployeeDataState>(
+                          builder: (context, state) {
+                    DateTime? eDate;
+                    if (state is EmployeeDataUpdatedState) {
+                      eDate = state.endDate;
+                    }
+                    return DateSelector(
+                      date: eDate,
+                      onDateSelection: (date) {
+                        context
+                            .read<EmployeeDatabloc>()
+                            .add(EmployeeEndDateSelectionEvent(endDate: date));
                       },
-                      child: Container(
-                        height: 40,
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: const Color(0xffE5E5E5)),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(2)),
-                        ),
-                        child: Row(children: [
-                          Image.asset(
-                            'assets/images/calendar.png',
-                            height: 24,
-                            width: 24,
-                          ),
-                          const SizedBox(width: 13.8),
-                          const Text('No date'),
-                        ]),
-                      ),
-                    ),
-                  ),
+                    );
+                  })),
                 ],
               )
             ],
@@ -209,200 +129,5 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
         ),
       ],
     );
-  }
-
-  showRoleBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      builder: (context) => Container(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: ListView.separated(
-          shrinkWrap: true,
-          itemCount: empRoles.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                context
-                    .read<EmployeeDatabloc>()
-                    .add(UpdateEmployeeRoleEvent(role: empRoles[index]));
-              },
-              child: Center(
-                child: Text(
-                  empRoles[index],
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w400),
-                ),
-              ),
-            );
-          },
-          separatorBuilder: (context, index) {
-            return const Divider(
-              // height: 1,
-              thickness: 0.5,
-              color: Colors.grey,
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Future<DateTime?> selectDate() {
-    DateTime? selectedDate;
-    return showDialog<DateTime?>(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 0, vertical: 20.0),
-        content: SizedBox(
-          height: 544,
-          width: 396,
-          child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                      child: _presetButton("Today", DateTime.now(), false,
-                          (date) => selectedDate = date)),
-                  const SizedBox(width: 16),
-                  Expanded(
-                      child: _presetButton("Next Monday", _nextMonday(), true,
-                          (date) => selectedDate = _nextMonday())),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                      child: _presetButton("Next Tuesday", _nextTuesday(),
-                          false, (date) => selectedDate = _nextTuesday())),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _presetButton(
-                        "After 1 week",
-                        DateTime.now().add(const Duration(days: 7)),
-                        false,
-                        (date) => selectedDate =
-                            DateTime.now().add(const Duration(days: 7))),
-                  ),
-                ],
-              ),
-            ),
-            // Table Calendar
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: TableCalendar(
-                  focusedDay: selectedDate ?? DateTime.now(),
-                  firstDay: DateTime(2000),
-                  lastDay: DateTime(2100),
-                  calendarFormat: _calendarFormat,
-                  selectedDayPredicate: (day) => isSameDay(day, selectedDate),
-                  onDaySelected: (selectedDay, focusedDay) {
-                    selectedDate = selectedDay;
-                  },
-                  headerStyle: const HeaderStyle(
-                    formatButtonVisible: false,
-                    titleCentered: true,
-                  ),
-                  availableGestures: AvailableGestures.all,
-                ),
-              ),
-            ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Image.asset(
-                    'assets/images/calendar.png',
-                    height: 20,
-                    width: 23,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    formatter.format(selectedDate ?? DateTime.now()),
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      height: 40,
-                      width: 73,
-                      decoration: const BoxDecoration(
-                          color: Color(0xffEDF8FF),
-                          borderRadius: BorderRadius.all(Radius.circular(4))),
-                      child: const Center(child: Text("Cancel")),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context, selectedDate);
-                    },
-                    child: Container(
-                      height: 40,
-                      width: 73,
-                      decoration: const BoxDecoration(
-                          color: Color(0xff1DA1F2),
-                          borderRadius: BorderRadius.all(Radius.circular(4))),
-                      child: const Center(child: Text("Save")),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ]),
-        ),
-      ),
-    );
-  }
-
-  /// Button for selecting preset dates
-  Widget _presetButton(String text, DateTime date, bool isSelected,
-      Function(DateTime) onDateSelection) {
-    return GestureDetector(
-      onTap: () => onDateSelection(date),
-      child: Container(
-        height: 36,
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? const Color(0xff1DA1F2) : const Color(0xffEDF8FF),
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
-        ),
-        child: Center(
-          child: Text(text,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: isSelected ? Colors.white : const Color(0xff1DA1F2),
-              )),
-        ),
-      ),
-    );
-  }
-
-  /// Get next Monday's date
-  DateTime _nextMonday() {
-    DateTime now = DateTime.now();
-    return now.add(Duration(days: (8 - now.weekday) % 7));
-  }
-
-  /// Get next Tuesday's date
-  DateTime _nextTuesday() {
-    DateTime now = DateTime.now();
-    return now.add(Duration(days: (9 - now.weekday) % 7));
   }
 }

@@ -25,5 +25,5 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<GetEmpDataUseCase>(() => GetEmpDataUseCase(sl()));
 
   //blocs
-  sl.registerFactory<EmployeeDatabloc>(() => EmployeeDatabloc(sl()));
+  sl.registerLazySingleton<EmployeeDatabloc>(() => EmployeeDatabloc(sl()));
 }

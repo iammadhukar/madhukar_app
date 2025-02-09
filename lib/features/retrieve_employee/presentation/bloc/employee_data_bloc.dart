@@ -42,20 +42,29 @@ class EmployeeDatabloc extends Bloc<EmployeeDataEvent, EmployeeDataState> {
   onUpdateEmployeeRole(
       UpdateEmployeeRoleEvent event, Emitter<EmployeeDataState> emit) {
     _employeeRole = event.role;
-    emit(EmployeeRoleUpdatedState(role: event.role));
+    emit(EmployeeDataUpdatedState(
+        role: _employeeRole,
+        startDate: _employeeStartDate,
+        endDate: _employeeEndDate));
   }
 
   //For employee start date selection
   onEmployeeStartDateSelection(
       EmployeeStartDateSelectionEvent event, Emitter<EmployeeDataState> emit) {
     _employeeStartDate = event.startDate;
-    emit(EmployeeStartDateUpdatedState(startDate: event.startDate));
+    emit(EmployeeDataUpdatedState(
+        role: _employeeRole,
+        startDate: _employeeStartDate,
+        endDate: _employeeEndDate));
   }
 
   //For employee end date selection
   onEmployeeEndDateSelection(
       EmployeeEndDateSelectionEvent event, Emitter<EmployeeDataState> emit) {
     _employeeEndDate = event.endDate;
-    emit(EmployeeEndDateUpdatedState(endDate: event.endDate));
+    emit(EmployeeDataUpdatedState(
+        role: _employeeRole,
+        startDate: _employeeStartDate,
+        endDate: _employeeEndDate));
   }
 }
