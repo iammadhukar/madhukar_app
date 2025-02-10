@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:madhukar_app/features/retrieve_employee/domain/entities/emp_data_entity.dart';
@@ -19,6 +20,18 @@ class EmpListTile extends StatelessWidget {
     return Dismissible(
       key: Key(employee.id.toString()),
       direction: DismissDirection.endToStart,
+      background: Container(
+        color: Colors.green,
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: const Icon(Icons.archive, color: Colors.white),
+      ),
+      secondaryBackground: Container(
+        color: Colors.red,
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: const Icon(Icons.delete, color: Colors.white),
+      ),
       onDismissed: (direction) {
         // Remove the itemployeeem from the list
         onDeleteEmployee();
