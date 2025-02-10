@@ -6,4 +6,6 @@ abstract class EmpDataRepository {
   Future<DataState<List<EmpDataEntity>>> getEmployees();
 
   Future<void> saveEmployee(EmpDataEntity data);
+
+  Future<void> deleteEmployee(EmpDataEntity data);
 }

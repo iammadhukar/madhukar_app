@@ -3,6 +3,7 @@ import 'package:madhukar_app/features/retrieve_employee/domain/entities/emp_data
 import 'package:madhukar_app/features/retrieve_employee/domain/usecases/save_emp_data.dart';
 
 import '../../../../core/resources/data_state.dart';
+import '../../domain/usecases/delete_employee.dart';
 import '../../domain/usecases/get_emp_data.dart';
 import 'employee_data_event.dart';
 import 'employee_data_state.dart';
@@ -10,6 +11,7 @@ import 'employee_data_state.dart';
 class EmployeeDatabloc extends Bloc<EmployeeDataEvent, EmployeeDataState> {
   final GetEmpDataUseCase _getEmpDataUseCase;
   final SaveEmpDataUseCase _saveEmpDatauseCase;
+  final DeleteEmployeeUseCase _deleteEmpDataUseCase;
 
   String? _employeeRole;
   String? get employeeRole => _employeeRole;
@@ -20,7 +22,8 @@ class EmployeeDatabloc extends Bloc<EmployeeDataEvent, EmployeeDataState> {
   DateTime? _employeeEndDate;
   DateTime? get employeeEndDate => _employeeEndDate;
 
-  EmployeeDatabloc(this._getEmpDataUseCase, this._saveEmpDatauseCase)
+  EmployeeDatabloc(this._getEmpDataUseCase, this._saveEmpDatauseCase,
+      this._deleteEmpDataUseCase)
       : super(const InitialState()) {
     on<GetEmployeeDataEvent>(onGetEmpData);
     on<UpdateEmployeeRoleEvent>(onUpdateEmployeeRole);
@@ -28,6 +31,7 @@ class EmployeeDatabloc extends Bloc<EmployeeDataEvent, EmployeeDataState> {
     on<EmployeeEndDateSelectionEvent>(onEmployeeEndDateSelection);
     on<SaveEmployeeDataEvent>(onSaveEmployeeData);
     on<CleanEmployeeEvent>(onCleanEmployeeData);
+    on<DeleteEmployeeEvent>(onDeleteEmployee);
   }
 
   //Call this method on event call
@@ -95,5 +99,12 @@ class EmployeeDatabloc extends Bloc<EmployeeDataEvent, EmployeeDataState> {
     _employeeStartDate = null;
     _employeeEndDate = null;
     emit(const CleanedEmployeeState());
+  }
+
+  onDeleteEmployee(
+      DeleteEmployeeEvent event, Emitter<EmployeeDataState> emit) async {
+    emit(const EmployeeDeletingState());
+    await _deleteEmpDataUseCase(param: event.employee);
+    emit(const EmployeeDeletedState());
   }
 }

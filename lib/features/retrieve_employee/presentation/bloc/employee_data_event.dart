@@ -1,3 +1,5 @@
+import 'package:madhukar_app/features/retrieve_employee/domain/entities/emp_data_entity.dart';
+
 abstract class EmployeeDataEvent {
   const EmployeeDataEvent();
 }
@@ -31,4 +33,10 @@ class SaveEmployeeDataEvent extends EmployeeDataEvent {
 
 class CleanEmployeeEvent extends EmployeeDataEvent {
   const CleanEmployeeEvent();
+}
+
+class DeleteEmployeeEvent extends EmployeeDataEvent {
+  final EmpDataEntity employee;
+
+  const DeleteEmployeeEvent(this.employee);
 }

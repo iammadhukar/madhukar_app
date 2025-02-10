@@ -13,4 +13,9 @@ class EmpDatabaseLocal {
       EmpDataModel employee, AppDatabase localDatabase) async {
     await localDatabase.employeeDao.addEmployee(employee);
   }
+
+  Future<void> deleteEmployee(
+      EmpDataModel employee, AppDatabase localDatabase) async {
+    await localDatabase.employeeDao.deleteEmployee(employee);
+  }
 }

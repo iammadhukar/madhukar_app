@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:madhukar_app/features/retrieve_employee/presentation/bloc/employee_data_event.dart';
 import 'package:madhukar_app/features/retrieve_employee/presentation/pages/add_emp_detail_page.dart';
 
 import '../bloc/employee_data_bloc.dart';
@@ -22,7 +23,26 @@ class _HomePageState extends State<HomePage> {
         title: const Text("Employee List"),
         backgroundColor: const Color(0xff1DA1F2),
       ),
-      body: BlocBuilder<EmployeeDatabloc, EmployeeDataState>(
+      body: BlocConsumer<EmployeeDatabloc, EmployeeDataState>(
+        listener: (context, state) {
+          print("state is $state");
+          if (state is EmployeeDeletingState) {
+            showDialog(
+              context: context,
+              builder: (context) => const AlertDialog(
+                content: SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              ),
+            );
+          } else if (state is EmployeeDeletedState) {
+            Navigator.of(context).pop();
+            showDeleteSnakeBar();
+            context.read<EmployeeDatabloc>().add(const GetEmployeeDataEvent());
+          }
+        },
         builder: (context, state) {
           if (state is InitialState) {
             return const Center(
@@ -44,6 +64,12 @@ class _HomePageState extends State<HomePage> {
                     itemBuilder: (context, index) {
                       return EmpListTile(
                         employee: state.data![index],
+                        onDeleteEmployee: () {
+                          print("hahahahaha");
+                          context
+                              .read<EmployeeDatabloc>()
+                              .add(DeleteEmployeeEvent(state.data![index]));
+                        },
                       );
                     },
                     separatorBuilder: (context, index) {
@@ -72,6 +98,16 @@ class _HomePageState extends State<HomePage> {
               builder: (context) => const AddEmployeeDetailPage()));
         },
         child: Image.asset("assets/images/fab_icon.png"),
+      ),
+    );
+  }
+
+  showDeleteSnakeBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Employee deleted"),
+        duration:
+            Duration(seconds: 2), // Duration for how long the snackbar appears
       ),
     );
   }

@@ -109,3 +109,17 @@ class CleanedEmployeeState extends EmployeeDataState {
   @override
   List<Object?> get props => [];
 }
+
+class EmployeeDeletingState extends EmployeeDataState {
+  const EmployeeDeletingState();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class EmployeeDeletedState extends EmployeeDataState {
+  const EmployeeDeletedState();
+
+  @override
+  List<Object?> get props => [];
+}
