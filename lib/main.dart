@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
+import 'config/util/theme_data.dart';
+import 'features/retrieve_employee/presentation/bloc/employee_data_bloc.dart';
+import 'features/retrieve_employee/presentation/bloc/employee_data_event.dart';
+import 'features/retrieve_employee/presentation/pages/home_page.dart';
+import 'injection_container.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDependencies();
   runApp(const MyApp());
 }
 
@@ -9,13 +18,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      // home: const MyHomePage(),
-    );
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider<EmployeeDatabloc>(
+              create: (context) =>
+                  sl<EmployeeDatabloc>()..add(const GetEmployeeDataEvent())),
+        ],
+        child: MaterialApp(
+          title: 'Flutter Demo',
+          theme: theme(),
+          home: const HomePage(),
+        ));
   }
 }

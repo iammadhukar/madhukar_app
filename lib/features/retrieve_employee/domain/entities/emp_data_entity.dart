@@ -1,14 +1,14 @@
 import 'package:equatable/equatable.dart';
 
 class EmpDataEntity extends Equatable {
-  final String id;
-  final String name;
-  final String role;
-  final DateTime startDate;
-  final DateTime endDate;
+  String? id;
+  String name;
+  String role;
+  int startDate;
+  int endDate;
 
   EmpDataEntity({
-    required this.id,
+    this.id,
     required this.name,
     required this.role,
     required this.startDate,
@@ -16,6 +16,5 @@ class EmpDataEntity extends Equatable {
   });
 
   @override
-  // TODO: implement props
   List<Object?> get props => [id, name, role, startDate, endDate];
 }
