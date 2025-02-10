@@ -25,5 +25,10 @@ class EmployeeEndDateSelectionEvent extends EmployeeDataEvent {
 }
 
 class SaveEmployeeDataEvent extends EmployeeDataEvent {
-  const SaveEmployeeDataEvent();
+  final String name;
+  const SaveEmployeeDataEvent(this.name);
+}
+
+class CleanEmployeeEvent extends EmployeeDataEvent {
+  const CleanEmployeeEvent();
 }

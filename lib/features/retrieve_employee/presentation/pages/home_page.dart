@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
                   );
           } else {
             return const Center(
-              child: Text("Something went wrong"),
+              child: SizedBox.shrink(),
             );
           }
         },

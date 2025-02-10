@@ -1,5 +1,6 @@
 import 'package:madhukar_app/core/database/app_database.dart';
 import 'package:madhukar_app/core/resources/data_state.dart';
+import 'package:madhukar_app/features/retrieve_employee/data/models/emp_data_model.dart';
 import 'package:madhukar_app/features/retrieve_employee/domain/entities/emp_data_entity.dart';
 import 'package:madhukar_app/features/retrieve_employee/domain/repository/emp_data_repository.dart';
 
@@ -18,6 +19,16 @@ class EmpDataRepositoryImpl implements EmpDataRepository {
       return DataSuccess(data);
     } catch (e) {
       return const DataFailure("Something went wrong. Please try again later.");
+    }
+  }
+
+  @override
+  Future<void> saveEmployee(EmpDataEntity data) async {
+    try {
+      _databaseLocal.saveEmployee(
+          EmpDataModel.fromEntity(data), _localDatabase);
+    } catch (e) {
+      // return const DataFailure('Unable to save data. Please try again.');
     }
   }
 }

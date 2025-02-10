@@ -8,4 +8,9 @@ class EmpDatabaseLocal {
     List<EmpDataModel> data = await localDatabase.employeeDao.getEmployeeData();
     return data;
   }
+
+  Future<void> saveEmployee(
+      EmpDataModel employee, AppDatabase localDatabase) async {
+    await localDatabase.employeeDao.addEmployee(employee);
+  }
 }

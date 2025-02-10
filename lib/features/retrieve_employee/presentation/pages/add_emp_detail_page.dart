@@ -108,7 +108,34 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
                     );
                   })),
                 ],
-              )
+              ),
+              BlocListener<EmployeeDatabloc, EmployeeDataState>(
+                listener: (context, state) {
+                  if (state is SavingEmployeeDataState) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => const AlertDialog(
+                        content: CircularProgressIndicator(),
+                      ),
+                    );
+                  } else if (state is SavedEmployeeDataState) {
+                    Navigator.of(context).pop();
+                    context.read<EmployeeDatabloc>().add(CleanEmployeeEvent());
+                  }
+                },
+                child: const SizedBox.shrink(),
+              ),
+              BlocListener<EmployeeDatabloc, EmployeeDataState>(
+                listener: (context, state) {
+                  if (state is CleanedEmployeeState) {
+                    context
+                        .read<EmployeeDatabloc>()
+                        .add(const GetEmployeeDataEvent());
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: const SizedBox.shrink(),
+              ),
             ],
           ),
         ),
@@ -122,7 +149,13 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
           title: 'Cancel',
         ),
         AppButton(
-          onClick: () {},
+          onClick: () {
+            if (_nameController.text.isNotEmpty) {
+              context
+                  .read<EmployeeDatabloc>()
+                  .add(SaveEmployeeDataEvent(_nameController.text));
+            }
+          },
           showBackgroundColor: true,
           title: 'Save',
         ),

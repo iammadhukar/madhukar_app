@@ -89,3 +89,23 @@ class EmployeeDataUpdatedState extends EmployeeDataState {
   @override
   List<Object?> get props => [role, startDate, endDate];
 }
+
+class SavingEmployeeDataState extends EmployeeDataState {
+  const SavingEmployeeDataState();
+  @override
+  List<Object?> get props => [];
+}
+
+class SavedEmployeeDataState extends EmployeeDataState {
+  const SavedEmployeeDataState();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class CleanedEmployeeState extends EmployeeDataState {
+  const CleanedEmployeeState();
+
+  @override
+  List<Object?> get props => [];
+}
