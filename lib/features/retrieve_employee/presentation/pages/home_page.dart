@@ -62,98 +62,106 @@ class _HomePageState extends State<HomePage> {
                   getEmployeeList(state.data!, "current");
               List<EmpDataEntity> _oldEmployees =
                   getEmployeeList(state.data!, "old");
-              return Column(
-                children: [
-                  _currentEmployees.isNotEmpty
-                      ? Container(
-                          height: 56.0,
-                          width: double.infinity,
-                          color: Colors.grey.withOpacity(0.3),
-                          padding: const EdgeInsets.all(16.0),
-                          child: const Text(
-                            "Current Employees",
-                            style: TextStyle(
-                              color: Color(0xff1DA1F2),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16.0,
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _currentEmployees.isNotEmpty
+                        ? Container(
+                            height: 56.0,
+                            width: double.infinity,
+                            color: Colors.grey.withOpacity(0.3),
+                            padding: const EdgeInsets.all(16.0),
+                            child: const Text(
+                              "Current Employees",
+                              style: TextStyle(
+                                color: Color(0xff1DA1F2),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16.0,
+                              ),
                             ),
-                          ),
-                        )
-                      : const SizedBox.shrink(),
-                  _currentEmployees.isNotEmpty
-                      ? ListView.separated(
-                          itemCount: _currentEmployees.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return EmpListTile(
-                              employee: _currentEmployees[index],
-                              onDeleteEmployee: () {
-                                context.read<EmployeeDatabloc>().add(
-                                    DeleteEmployeeEvent(
-                                        _currentEmployees[index]));
-                              },
-                              onClick: () {
-                                context.read<EmployeeDatabloc>().add(
-                                    UpdateEmployeeToFormEvent(
-                                        _currentEmployees[index]));
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => AddEmployeeDetailPage(
-                                        employee: _currentEmployees[index])));
-                              },
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return const Divider(
-                              color: Colors.grey,
-                            );
-                          },
-                        )
-                      : const SizedBox.shrink(),
-                  _oldEmployees.isNotEmpty
-                      ? Container(
-                          height: 56.0,
-                          width: double.infinity,
-                          color: Colors.grey.withOpacity(0.3),
-                          padding: const EdgeInsets.all(16.0),
-                          child: const Text(
-                            "Previous Employees",
-                            style: TextStyle(
-                              color: Color(0xff1DA1F2),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16.0,
+                          )
+                        : const SizedBox.shrink(),
+                    _currentEmployees.isNotEmpty
+                        ? ListView.separated(
+                            itemCount: _currentEmployees.length,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return EmpListTile(
+                                employee: _currentEmployees[index],
+                                onDeleteEmployee: () {
+                                  context.read<EmployeeDatabloc>().add(
+                                      DeleteEmployeeEvent(
+                                          _currentEmployees[index]));
+                                },
+                                onClick: () {
+                                  context.read<EmployeeDatabloc>().add(
+                                      UpdateEmployeeToFormEvent(
+                                          _currentEmployees[index]));
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          AddEmployeeDetailPage(
+                                              employee:
+                                                  _currentEmployees[index])));
+                                },
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return const Divider(
+                                color: Colors.grey,
+                              );
+                            },
+                          )
+                        : const SizedBox.shrink(),
+                    _oldEmployees.isNotEmpty
+                        ? Container(
+                            height: 56.0,
+                            width: double.infinity,
+                            color: Colors.grey.withOpacity(0.3),
+                            padding: const EdgeInsets.all(16.0),
+                            child: const Text(
+                              "Previous Employees",
+                              style: TextStyle(
+                                color: Color(0xff1DA1F2),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16.0,
+                              ),
                             ),
-                          ),
-                        )
-                      : const SizedBox.shrink(),
-                  _oldEmployees.isNotEmpty
-                      ? ListView.separated(
-                          itemCount: _oldEmployees.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return EmpListTile(
-                              employee: _oldEmployees[index],
-                              onDeleteEmployee: () {
-                                context.read<EmployeeDatabloc>().add(
-                                    DeleteEmployeeEvent(_oldEmployees[index]));
-                              },
-                              onClick: () {
-                                context.read<EmployeeDatabloc>().add(
-                                    UpdateEmployeeToFormEvent(
-                                        _oldEmployees[index]));
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => AddEmployeeDetailPage(
-                                        employee: _oldEmployees[index])));
-                              },
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return const Divider(
-                              color: Colors.grey,
-                            );
-                          },
-                        )
-                      : const SizedBox.shrink(),
-                ],
+                          )
+                        : const SizedBox.shrink(),
+                    _oldEmployees.isNotEmpty
+                        ? ListView.separated(
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: _oldEmployees.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              return EmpListTile(
+                                employee: _oldEmployees[index],
+                                onDeleteEmployee: () {
+                                  context.read<EmployeeDatabloc>().add(
+                                      DeleteEmployeeEvent(
+                                          _oldEmployees[index]));
+                                },
+                                onClick: () {
+                                  context.read<EmployeeDatabloc>().add(
+                                      UpdateEmployeeToFormEvent(
+                                          _oldEmployees[index]));
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          AddEmployeeDetailPage(
+                                              employee: _oldEmployees[index])));
+                                },
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return const Divider(
+                                color: Colors.grey,
+                              );
+                            },
+                          )
+                        : const SizedBox.shrink(),
+                  ],
+                ),
               );
             } else {
               return Center(

@@ -18,7 +18,7 @@ class EmployeeDatabloc extends Bloc<EmployeeDataEvent, EmployeeDataState> {
   String? _employeeRole;
   String? get employeeRole => _employeeRole;
 
-  DateTime? _employeeStartDate;
+  DateTime? _employeeStartDate = DateTime.now();
   DateTime? get employeeStartDate => _employeeStartDate;
 
   DateTime? _employeeEndDate;
@@ -100,7 +100,7 @@ class EmployeeDatabloc extends Bloc<EmployeeDataEvent, EmployeeDataState> {
   onCleanEmployeeData(
       CleanEmployeeEvent event, Emitter<EmployeeDataState> emit) {
     _employeeRole = null;
-    _employeeStartDate = null;
+    _employeeStartDate = DateTime.now();
     _employeeEndDate = null;
     emit(const CleanedEmployeeState());
   }

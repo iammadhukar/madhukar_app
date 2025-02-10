@@ -37,7 +37,11 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
             ? const Text('Add Employee Details')
             : const Text('Edit Employee Details'),
       ),
-      body: Form(
+      body: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+          // FocusScope.of(context).unfocus();
+        },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
