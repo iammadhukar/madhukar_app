@@ -4,6 +4,7 @@ import 'package:madhukar_app/features/retrieve_employee/domain/usecases/save_emp
 
 import '../../../../core/resources/data_state.dart';
 import '../../domain/usecases/delete_employee.dart';
+import '../../domain/usecases/edit_employee.dart';
 import '../../domain/usecases/get_emp_data.dart';
 import 'employee_data_event.dart';
 import 'employee_data_state.dart';
@@ -12,6 +13,7 @@ class EmployeeDatabloc extends Bloc<EmployeeDataEvent, EmployeeDataState> {
   final GetEmpDataUseCase _getEmpDataUseCase;
   final SaveEmpDataUseCase _saveEmpDatauseCase;
   final DeleteEmployeeUseCase _deleteEmpDataUseCase;
+  final EditEmployeeUseCase _editEmployeeUseCase;
 
   String? _employeeRole;
   String? get employeeRole => _employeeRole;
@@ -23,7 +25,7 @@ class EmployeeDatabloc extends Bloc<EmployeeDataEvent, EmployeeDataState> {
   DateTime? get employeeEndDate => _employeeEndDate;
 
   EmployeeDatabloc(this._getEmpDataUseCase, this._saveEmpDatauseCase,
-      this._deleteEmpDataUseCase)
+      this._deleteEmpDataUseCase, this._editEmployeeUseCase)
       : super(const InitialState()) {
     on<GetEmployeeDataEvent>(onGetEmpData);
     on<UpdateEmployeeRoleEvent>(onUpdateEmployeeRole);
@@ -32,6 +34,8 @@ class EmployeeDatabloc extends Bloc<EmployeeDataEvent, EmployeeDataState> {
     on<SaveEmployeeDataEvent>(onSaveEmployeeData);
     on<CleanEmployeeEvent>(onCleanEmployeeData);
     on<DeleteEmployeeEvent>(onDeleteEmployee);
+    on<EditEmployeeEvent>(onEmployeeEdit);
+    on<UpdateEmployeeToFormEvent>(onUpdateEmployeeToForm);
   }
 
   //Call this method on event call
@@ -106,5 +110,38 @@ class EmployeeDatabloc extends Bloc<EmployeeDataEvent, EmployeeDataState> {
     emit(const EmployeeDeletingState());
     await _deleteEmpDataUseCase(param: event.employee);
     emit(const EmployeeDeletedState());
+  }
+
+  onEmployeeEdit(
+      EditEmployeeEvent event, Emitter<EmployeeDataState> emit) async {
+    emit(const SavingEmployeeDataState());
+    // EmpDataEntity employee = EmpDataEntity(
+    //   name: event.name!,
+    //   role: _employeeRole!,
+    //   startDate: _employeeStartDate!.millisecondsSinceEpoch,
+    //   endDate: _employeeEndDate!.millisecondsSinceEpoch,
+    // );
+
+    event.employee.role = _employeeRole!;
+    event.employee.startDate = _employeeStartDate!.millisecondsSinceEpoch;
+    event.employee.endDate = _employeeEndDate!.millisecondsSinceEpoch;
+
+    //Call usecase to save data to repository
+    await _editEmployeeUseCase(param: event.employee);
+    emit(const SavedEmployeeDataState());
+  }
+
+  onUpdateEmployeeToForm(
+      UpdateEmployeeToFormEvent event, Emitter<EmployeeDataState> emit) {
+    _employeeRole = event.employee.role;
+    _employeeStartDate =
+        DateTime.fromMillisecondsSinceEpoch(event.employee.startDate);
+    _employeeEndDate =
+        DateTime.fromMillisecondsSinceEpoch(event.employee.endDate);
+
+    emit(EmployeeDataUpdatedState(
+        role: _employeeRole,
+        startDate: _employeeStartDate,
+        endDate: _employeeEndDate));
   }
 }

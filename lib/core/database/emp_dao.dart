@@ -11,4 +11,7 @@ abstract class EmployeeDao {
 
   @Query('Select * from employee_data')
   Future<List<EmpDataModel>> getEmployeeData();
+
+  @update
+  Future<void> editEmployee(EmpDataModel employee);
 }

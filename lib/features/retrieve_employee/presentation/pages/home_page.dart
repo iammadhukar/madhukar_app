@@ -92,6 +92,14 @@ class _HomePageState extends State<HomePage> {
                                     DeleteEmployeeEvent(
                                         _currentEmployees[index]));
                               },
+                              onClick: () {
+                                context.read<EmployeeDatabloc>().add(
+                                    UpdateEmployeeToFormEvent(
+                                        _currentEmployees[index]));
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => AddEmployeeDetailPage(
+                                        employee: _currentEmployees[index])));
+                              },
                             );
                           },
                           separatorBuilder: (context, index) {
@@ -128,6 +136,14 @@ class _HomePageState extends State<HomePage> {
                                 context.read<EmployeeDatabloc>().add(
                                     DeleteEmployeeEvent(_oldEmployees[index]));
                               },
+                              onClick: () {
+                                context.read<EmployeeDatabloc>().add(
+                                    UpdateEmployeeToFormEvent(
+                                        _oldEmployees[index]));
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => AddEmployeeDetailPage(
+                                        employee: _oldEmployees[index])));
+                              },
                             );
                           },
                           separatorBuilder: (context, index) {
@@ -157,8 +173,8 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const AddEmployeeDetailPage()));
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => AddEmployeeDetailPage()));
         },
         child: Image.asset("assets/images/fab_icon.png"),
       ),

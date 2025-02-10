@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `employee_data` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `role` TEXT NOT NULL, `startDate` INTEGER NOT NULL, `endDate` INTEGER NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `employee_data` (`id` TEXT, `name` TEXT NOT NULL, `role` TEXT NOT NULL, `startDate` INTEGER NOT NULL, `endDate` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -114,6 +114,17 @@ class _$EmployeeDao extends EmployeeDao {
                   'startDate': item.startDate,
                   'endDate': item.endDate
                 }),
+        _empDataModelUpdateAdapter = UpdateAdapter(
+            database,
+            'employee_data',
+            ['id'],
+            (EmpDataModel item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'role': item.role,
+                  'startDate': item.startDate,
+                  'endDate': item.endDate
+                }),
         _empDataModelDeletionAdapter = DeletionAdapter(
             database,
             'employee_data',
@@ -134,13 +145,15 @@ class _$EmployeeDao extends EmployeeDao {
 
   final InsertionAdapter<EmpDataModel> _empDataModelInsertionAdapter;
 
+  final UpdateAdapter<EmpDataModel> _empDataModelUpdateAdapter;
+
   final DeletionAdapter<EmpDataModel> _empDataModelDeletionAdapter;
 
   @override
   Future<List<EmpDataModel>> getEmployeeData() async {
     return _queryAdapter.queryList('Select * from employee_data',
         mapper: (Map<String, Object?> row) => EmpDataModel(
-            id: row['id'] as String,
+            id: row['id'] as String?,
             name: row['name'] as String,
             role: row['role'] as String,
             startDate: row['startDate'] as int,
@@ -151,6 +164,11 @@ class _$EmployeeDao extends EmployeeDao {
   Future<void> addEmployee(EmpDataModel employee) async {
     await _empDataModelInsertionAdapter.insert(
         employee, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> editEmployee(EmpDataModel employee) async {
+    await _empDataModelUpdateAdapter.update(employee, OnConflictStrategy.abort);
   }
 
   @override

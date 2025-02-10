@@ -8,6 +8,7 @@ import 'features/retrieve_employee/data/data_sources/local_data/emp_database_loc
 import 'features/retrieve_employee/data/repository/emp_data_repository_impl.dart';
 import 'features/retrieve_employee/domain/repository/emp_data_repository.dart';
 import 'features/retrieve_employee/domain/usecases/delete_employee.dart';
+import 'features/retrieve_employee/domain/usecases/edit_employee.dart';
 
 final sl = GetIt.instance;
 
@@ -28,8 +29,10 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<SaveEmpDataUseCase>(() => SaveEmpDataUseCase(sl()));
   sl.registerLazySingleton<DeleteEmployeeUseCase>(
       () => DeleteEmployeeUseCase(sl()));
+  sl.registerLazySingleton<EditEmployeeUseCase>(
+      () => EditEmployeeUseCase(sl()));
 
   //blocs
   sl.registerLazySingleton<EmployeeDatabloc>(
-      () => EmployeeDatabloc(sl(), sl(), sl()));
+      () => EmployeeDatabloc(sl(), sl(), sl(), sl()));
 }

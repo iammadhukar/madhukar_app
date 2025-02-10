@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:madhukar_app/features/retrieve_employee/presentation/bloc/employee_data_event.dart';
 
+import '../../domain/entities/emp_data_entity.dart';
 import '../bloc/employee_data_bloc.dart';
 import '../bloc/employee_data_state.dart';
 import '../widgets/app_button.dart';
@@ -9,14 +10,21 @@ import '../widgets/date_selector.dart';
 import '../widgets/role_widget.dart';
 
 class AddEmployeeDetailPage extends StatefulWidget {
-  const AddEmployeeDetailPage({super.key});
+  EmpDataEntity? employee;
+  AddEmployeeDetailPage({super.key, this.employee});
 
   @override
   State<AddEmployeeDetailPage> createState() => _AddEmployeeDetailPageState();
 }
 
 class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
-  final TextEditingController _nameController = TextEditingController();
+  late TextEditingController _nameController;
+
+  @override
+  void initState() {
+    _nameController = TextEditingController(text: widget.employee?.name);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +33,9 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
         // leading: const SizedBox.shrink(),
         automaticallyImplyLeading: false,
         centerTitle: false,
-        title: const Text('Add Employee Details'),
+        title: widget.employee == null
+            ? const Text('Add Employee Details')
+            : const Text('Edit Employee Details'),
       ),
       body: Form(
         child: Padding(
@@ -120,7 +130,9 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
                     );
                   } else if (state is SavedEmployeeDataState) {
                     Navigator.of(context).pop();
-                    context.read<EmployeeDatabloc>().add(CleanEmployeeEvent());
+                    context
+                        .read<EmployeeDatabloc>()
+                        .add(const CleanEmployeeEvent());
                   }
                 },
                 child: const SizedBox.shrink(),
@@ -143,7 +155,8 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
       persistentFooterButtons: [
         AppButton(
           onClick: () {
-            Navigator.of(context).pop();
+            // Navigator.of(context).pop();
+            context.read<EmployeeDatabloc>().add(const CleanEmployeeEvent());
           },
           showBackgroundColor: false,
           title: 'Cancel',
@@ -151,9 +164,16 @@ class _AddEmployeeDetailPageState extends State<AddEmployeeDetailPage> {
         AppButton(
           onClick: () {
             if (_nameController.text.isNotEmpty) {
-              context
-                  .read<EmployeeDatabloc>()
-                  .add(SaveEmployeeDataEvent(_nameController.text));
+              if (widget.employee == null) {
+                context
+                    .read<EmployeeDatabloc>()
+                    .add(SaveEmployeeDataEvent(_nameController.text));
+              } else {
+                widget.employee!.name = _nameController.text;
+                context
+                    .read<EmployeeDatabloc>()
+                    .add(EditEmployeeEvent(widget.employee!));
+              }
             }
           },
           showBackgroundColor: true,

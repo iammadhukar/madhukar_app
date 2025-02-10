@@ -41,4 +41,14 @@ class EmpDataRepositoryImpl implements EmpDataRepository {
       // return const DataFailure('Unable to save data. Please try again.');
     }
   }
+
+  @override
+  Future<void> editEmployee(EmpDataEntity data) async {
+    try {
+      await _databaseLocal.editEmployee(
+          EmpDataModel.fromEntity(data), _localDatabase);
+    } catch (e) {
+      // return const DataFailure('Unable to save data. Please try again.');
+    }
+  }
 }

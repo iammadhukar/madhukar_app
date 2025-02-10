@@ -123,3 +123,17 @@ class EmployeeDeletedState extends EmployeeDataState {
   @override
   List<Object?> get props => [];
 }
+
+class EmployeeEditingState extends EmployeeDataState {
+  const EmployeeEditingState();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class EmployeeEditedState extends EmployeeDataState {
+  const EmployeeEditedState();
+
+  @override
+  List<Object?> get props => [];
+}

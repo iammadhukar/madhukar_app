@@ -43,6 +43,8 @@ class RoleWidget extends StatelessWidget {
                 if (state is EmployeeDataUpdatedState) {
                   role = state.role ?? "";
                 }
+
+                print("role $role $state");
                 return Text(
                   role.isEmpty ? 'Select role' : role,
                   style: TextStyle(

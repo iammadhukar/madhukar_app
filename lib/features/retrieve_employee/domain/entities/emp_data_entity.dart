@@ -2,10 +2,10 @@ import 'package:equatable/equatable.dart';
 
 class EmpDataEntity extends Equatable {
   String? id;
-  final String name;
-  final String role;
-  final int startDate;
-  final int endDate;
+  String name;
+  String role;
+  int startDate;
+  int endDate;
 
   EmpDataEntity({
     this.id,

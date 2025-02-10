@@ -40,3 +40,15 @@ class DeleteEmployeeEvent extends EmployeeDataEvent {
 
   const DeleteEmployeeEvent(this.employee);
 }
+
+class EditEmployeeEvent extends EmployeeDataEvent {
+  final EmpDataEntity employee;
+
+  const EditEmployeeEvent(this.employee);
+}
+
+class UpdateEmployeeToFormEvent extends EmployeeDataEvent {
+  final EmpDataEntity employee;
+
+  UpdateEmployeeToFormEvent(this.employee);
+}

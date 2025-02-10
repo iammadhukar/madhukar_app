@@ -8,4 +8,5 @@ abstract class EmpDataRepository {
   Future<void> saveEmployee(EmpDataEntity data);
 
   Future<void> deleteEmployee(EmpDataEntity data);
+  Future<void> editEmployee(EmpDataEntity data);
 }
